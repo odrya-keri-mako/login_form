@@ -1,0 +1,80 @@
+############################################################
+# Global: OS / Editor
+############################################################
+.DS_Store
+Thumbs.db
+
+# VS Code (repo-szinten ne menjen)
+.vscode/
+
+############################################################
+# Dependencies
+############################################################
+**/node_modules/
+
+############################################################
+# Logs
+############################################################
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+**/lerna-debug.log*
+**/*.log
+
+############################################################
+# Environment files (ne menjenek fel GitHub-ra)
+############################################################
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.sample
+
+############################################################
+# Build outputs (Angular/React/Vue/Svelte)
+############################################################
+# Angular
+**/dist/
+**/.angular/
+**/out-tsc/
+**/tmp/
+
+# Vite (React/Vue/Svelte jellemző)
+**/dist/
+**/.vite/
+
+# React (CRA régi / Next, ha később lenne)
+**/build/
+**/.next/
+**/out/
+
+############################################################
+# Test coverage
+############################################################
+**/coverage/
+**/.nyc_output/
+
+############################################################
+# Cache (TypeScript / ESLint / tooling)
+############################################################
+**/*.tsbuildinfo
+**/.eslintcache
+**/.stylelintcache
+**/.cache/
+
+############################################################
+# Package manager locks (válassz stratégiát)
+# Ajánlott: azt hagyd bent, amit használtok (npm: package-lock.json)
+############################################################
+# Ha NPM-et használtok, hagyd bent a package-lock.json-t.
+# Ha nem akarod verziózni a lock fájlokat, vedd ki a kommentet:
+# **/package-lock.json
+# **/yarn.lock
+# **/pnpm-lock.yaml
+
+############################################################
+# Root-only ignores (csak a gyökérben)
+############################################################
+/*.docx
+/*.xlsx
+/*.zip

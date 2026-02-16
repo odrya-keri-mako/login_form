@@ -1,0 +1,162 @@
+<div class="container-fluid">
+  <div class="row vh-100 px-2 position-relative 
+              justify-content-center align-items-center">
+
+    <!-- Toggle theme -->
+    <div class="position-fixed top-0 end-0 
+                w-auto p-3 z-3 cursor-pointer"
+         (click)="toggleTheme()">
+      <fa-icon [icon]="icon.faMoon" 
+                class="fa-lg theme-icon"
+               [class.d-none]="isDark"></fa-icon>
+      <fa-icon [icon]="icon.faSun" 
+                class="fa-lg theme-icon"
+               [class.d-none]="!isDark"></fa-icon>
+    </div>
+
+    <!-- Form -->
+    <form #reactiveForm
+          [formGroup]="formGroup"
+          (ngSubmit)="onSubmit()"
+          class="w-auto p-3 border rounded 
+                 shadow-sm-bottom-end scale-in">
+
+      <!-- Title -->
+      <div class="row my-4 justify-content-center">
+        <img src="/angular.svg" 
+             class="mb-3" 
+             height="50" 
+             alt="logo" 
+             loading="lazy">
+         <h4 class="text-center">
+           <fa-icon [icon]="icon.faRightToBracket" 
+                     class="fa-lg me-1"></fa-icon>
+           Bejelentkezés
+         </h4>
+      </div>
+
+      <!-- Email -->
+      <div class="mb-4">
+
+        <!-- Label -->
+        <label class="form-label fw-bold" for="email">
+          <fa-icon [icon]="icon.faStar" 
+                    class="me-1 fa-2xs text-danger"></fa-icon>
+          <fa-icon [icon]="icon.faEnvelope" class="me-1"></fa-icon>
+          Email cím:
+        </label>
+
+        <!-- Input -->
+        <div class="position-relative 
+                    d-flex flex-col align-items-center">
+          <input #emailInput
+                 id="email"
+                 type="email"
+                 class="form-control pe-5"
+                 placeholder="email cím"
+                 autocomplete="email"
+                 spellcheck="false"
+                 formControlName="email"
+                 maxlength="253"
+                 required>
+
+          <!-- Clear icon -->
+          <fa-icon [icon]="icon.faXmark" 
+                    class="text-primary fa-2xs end-0 me-5
+                           position-absolute cursor-pointer"
+                   [class.invisible]="!hasValue('email')"
+                   (click)="clear('email')"></fa-icon>
+
+          <!-- Check icon -->
+          <fa-icon [icon]="icon.faCheck"
+                   [class.invisible]="!isValid('email')"
+                   class="ms-3 text-success fw-bold"></fa-icon>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="mb-1">
+
+        <!-- Label -->
+        <label class="form-label fw-bold" for="password">
+          <fa-icon [icon]="icon.faStar" 
+                    class="me-1 fa-2xs text-danger"></fa-icon>
+          <fa-icon [icon]="icon.faKey" class="me-1"></fa-icon>
+          Jelszó:
+        </label>
+
+        <!-- Input -->
+        <div class="position-relative d-flex flex-col align-items-center">
+          <input #passwordInput
+                 id="password"
+                 [type]="formGroup.value.showPassword ? 'text' : 'password'"
+                 class="form-control pe-5"
+                 placeholder="jelszó"
+                 autocomplete="current-password"
+                 spellcheck="false"
+                 formControlName="password"
+                 minlength="6"
+                 maxlength="20"
+                 required>
+
+          <!-- Clear icon -->
+          <fa-icon [icon]="icon.faXmark" 
+                    class="text-primary fa-2xs end-0 me-5
+                           position-absolute cursor-pointer"
+                   [class.invisible]="!hasValue('password')"
+                   (click)="clear('password')"></fa-icon>
+
+          <!-- Check icon -->
+          <fa-icon [icon]="icon.faCheck"
+                   [class.invisible]="!isValid('password')"
+                   class="ms-3 text-success fw-bold"></fa-icon>
+        </div>
+      </div>
+
+      <!-- Password rule -->
+      <div class="mb-2 fs-xs ms-1 me-5 text-break">
+        6-20 karakter 
+        (legalább egy nagybetűt, egy kisbetűt és egy számot tartalmaz)
+      </div>
+
+      <!-- Show/Hide password -->
+      <div class="mb-5 d-flex align-items-center">
+
+        <!-- Input -->
+        <input id="showPassword"
+               type="checkbox"
+               class="form-check-input m-0"
+               formControlName="showPassword">
+
+        <!-- Label -->
+        <label class="form-check-label fs-sm" 
+               for="showPassword">
+          <fa-icon [icon]="icon.faEye" class="fa-sm mx-1"></fa-icon>
+          jelszót megjelenít
+        </label>
+      </div>
+
+      <!-- Buttons -->
+      <div class="text-center">
+
+        <!-- Login -->
+        <button type="submit"
+                class="btn btn-primary btn-form mx-2 mb-3 
+                       shadow-sm-bottom-end btn-click-effect"
+                [disabled]="formGroup.invalid">
+          <fa-icon [icon]="icon.faRightToBracket" class="me-1"></fa-icon>
+          Bejelentkezés
+        </button>
+
+        <!-- Cancel -->
+        <button type="button"
+                class="btn btn-secondary btn-form mx-2 mb-3 
+                       shadow-sm-bottom-end btn-click-effect"
+                (click)="cancel()">
+          <fa-icon [icon]="icon.faCircleXmark" class="me-1"></fa-icon>
+          Mégsem
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

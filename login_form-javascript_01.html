@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bejelentkezés - JavaScript_01</title>
+  <link rel="icon" type="image/svg+xml" href="./javascript.svg">
+
+  <!-- Application components -->
+  <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/css/bootstrap.min.css">
+  <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+  <!-- Styles -->
+  <style>
+    *:not(input):not(textarea) {
+      user-select:none !important;
+      outline-style:none !important;
+    }
+    .cursor-pointer {
+      cursor: pointer;
+    }
+    .btn-form {
+      min-width: 150px;
+    }
+    .fs-xs {
+      font-size: 0.6rem;
+    }
+    .fs-sm {
+      font-size: 0.8rem;;
+    }
+    .shadow-sm-bottom-end {
+      box-shadow: 0.3rem 0.3rem 0.3rem 0 rgba(0,0,0,0.3);
+    }
+    .btn-click-effect:not(.disabled):active {
+      animation:btnClickEffect 40ms;
+    }
+    @keyframes btnClickEffect {
+        0% 	{transform:none;}
+      50% 	{transform:scale(0.9);}
+      100% 	{transform:none;}
+    }
+    .scale-in {
+      animation: scaleIn .6s ease both;
+    }
+    @keyframes scaleIn {
+        0% 	{opacity:0;transform: scale(0); }
+      25% 	{opacity:0;transform: scale(0); }
+      100% 	{opacity:1;transform: scale(1); }
+    }
+  </style>
+</head>
+<body data-bs-theme="dark">
+
+  <!-- Container -->
+  <div class="container-fluid">
+
+    <!-- Row -->
+    <div class="row vh-100 px-2 position-relative
+                justify-content-center align-items-center">
+
+      <!-- Toggle dark/light theme -->
+      <div id="toggle-theme"
+           class="position-fixed top-0 end-0 
+                  w-auto p-3 z-3 cursor-pointer"
+           onclick="toggleTheme()">
+        <i class="fa-solid fa-moon fa-lg theme-icon d-none"></i>
+        <i class="fa-solid fa-sun fa-lg theme-icon"></i>
+      </div>
+
+      <!-- Form -->
+      <form name="loginForm"
+            class="w-auto p-3 border rounded 
+                   shadow-sm-bottom-end scale-in">
+
+        <!-- Title -->
+        <div class="row my-4 justify-center-center">
+          <img src="./javascript.svg" 
+               class="mb-3" 
+               height="50" 
+               alt="logo" 
+               loading="lazy">
+          <h4 class="text-center">
+            <i class="fa-solid fa-right-to-bracket me-1"></i>
+            Bejelentkezés
+          </h4>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-4">
+
+          <!-- Label -->
+          <label class="form-label fw-bold"
+                 for="email">
+            <i class="fa-solid fa-star fa-2xs text-danger"></i>
+            <i class="fa-solid fa-envelope me-1"></i>
+            Email cím:
+          </label>
+
+          <!-- Input -->
+          <div class="position-relative 
+                      d-flex flex-col align-items-center">
+            <input type="email"
+                   name="email" 
+                   class="form-control pe-5" 
+                   id="email"
+                   placeholder="email cím"
+                   autocomplete="email"
+                   spellcheck="false"
+                   required
+                   maxlength="253"
+                   oninput="changed()">
+
+            <!-- Clear icon -->
+            <i class="fa-solid fa-xmark text-primary fa-2xs
+                      end-0 me-5 position-absolute cursor-pointer invisible"
+                      onclick="clearValue(event)"></i>
+
+            <!-- Check icon -->
+            <i class="fa-solid fa-check ms-3 text-success 
+                      fw-bold invisible"></i>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-1">
+
+          <!-- Label -->
+          <label class="form-label fw-bold"
+                 for="password">
+            <i class="fa-solid fa-star fa-2xs text-danger"></i>
+            <i class="fa-solid fa-key me-1"></i>
+            Jelszó:
+          </label>
+
+          <!-- Input -->
+          <div class="position-relative
+                      d-flex flex-col align-items-center">
+            <input type="password"
+                   name="password" 
+                   class="form-control pe-5" 
+                   id="password"
+                   placeholder="jelszó"
+                   autocomplete="current-password"
+                   spellcheck="false"
+                   required
+                   minlength="6"
+                   maxlength="20"
+                   oninput="changed()">
+
+            <!-- Clear icon -->
+            <i class="fa-solid fa-xmark text-primary fa-2xs
+                      end-0 me-5 position-absolute cursor-pointer invisible"
+                      onclick="clearValue(event)"></i>
+
+            <!-- Check icon -->
+            <i class="fa-solid fa-check ms-3 text-success 
+                      fw-bold invisible"></i>
+          </div>
+        </div>
+
+        <!-- Passwor rule -->
+        <div class="mb-2 fs-xs ms-1 me-5 text-break">
+          6-20 karakter (legalább egy nagybetűt, egy kisbetűt és egy számot tartalmaz)
+        </div>
+
+        <!-- Show/Hide password -->
+        <div class="mb-5 d-flex align-items-center">
+          <input type="checkbox"
+                 name="showPassword"
+                 class="form-check-input m-0" 
+                 id="showPassword"
+                 onchange="togglePassword()">
+          <label class="form-check-label fs-sm"
+                 for="showPassword">
+            <i class="fa-solid fa-eye fa-sm ms-2"></i>
+            jelszót megjelenít
+          </label>
+        </div>
+
+        <!-- Buttons -->
+        <div class="text-center">
+
+          <!-- Login -->
+          <button type="button" 
+                  class="btn btn-primary btn-form mx-2 mb-3 
+                         shadow-sm-bottom-end btn-click-effect"
+                  disabled
+                  onclick="login()">
+            <i class="fa-solid fa-right-to-bracket me-1"></i>
+            Bejelentkezés
+          </button>
+
+          <!-- Cancel -->
+          <button type="button" 
+                  class="btn btn-secondary btn-form mx-2 mb-3 
+                         shadow-sm-bottom-end btn-click-effect"
+                  onclick="cancel()">
+            <i class="fa-solid fa-circle-xmark me-1"></i>
+            Mégsem
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+
+    /**
+     * Check if the value is a valid email address
+     * Expectations:
+     * - Local part: any non-whitespace characters except '@'
+     * - Domain part: at least one dot, with 2-63 letter TLD
+     * @param {string} value - The value to validate
+     * @returns {boolean} true if valid, false otherwise
+     */
+    function isEmail(value) {
+      const RE = /^[^\s@]+@(?:[^\s@]+\.)+[A-Za-z]{2,63}$/;
+      return RE.test(value);
+    }
+
+    /**
+     * Check if the value is a valid password
+     * Expectations:
+     * - 6-20 characters
+     * - At least one uppercase letter
+     * - At least one lowercase letter
+     * - At least one number
+     * @param {string} value - The value to validate
+     * @returns {boolean} true if valid, false otherwise
+     */
+    function isPassword(value) {
+      const RE = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+      return RE.test(value);
+    }
+
+    /**
+     * Set element visibility
+     * @param {HTMLElement} element - The element to show or hide
+     * @param {boolean} isVisible - true to show, false to hide
+     */
+    function setVisibility(element, isVisible) {
+      element.classList[isVisible ? 'remove' : 'add']('invisible');
+    }
+
+    
+    // Get elements
+    let inputs      = document.querySelectorAll('input'),
+        buttons     = document.querySelectorAll('button'),
+        clearIcons  = document.querySelectorAll('i.fa-xmark'),
+        checkIcons  = document.querySelectorAll('i.fa-check'),
+        themeIcons  = document.querySelectorAll('i.theme-icon');
+
+    // Input changed
+    function changed() {
+
+      // Set is valid helper
+      let isValid = [false, false];
+
+      // Remove leading and trailing spaces
+      inputs[0].value = inputs[0].value.trim();
+      inputs[1].value = inputs[1].value.trim();
+
+      // Set clear icons visibility
+      setVisibility(clearIcons[0], inputs[0].value !== '');
+      setVisibility(clearIcons[1], inputs[1].value !== '');
+
+      // Check input value valid
+      isValid[0]  = isEmail(inputs[0].value);
+      isValid[1]  = isPassword(inputs[1].value);
+
+      // Set checked icon visibility
+      setVisibility(checkIcons[0], isValid[0]);
+      setVisibility(checkIcons[1], isValid[1]);
+
+      // Set login button enabled/disabled
+      buttons[0].disabled = !isValid[0] || !isValid[1];
+    }
+
+    // Clear input value
+    function clearValue(event) {
+      let icon  = event.currentTarget,
+          input = icon.parentNode.querySelector('input');
+      input.value = "";
+      input.focus();
+      changed();
+    }
+
+    // Show/Hide password
+    function togglePassword() {
+      inputs[1].type = inputs[2].checked ? 'text' : 'password';
+    }
+
+    // Login
+    function login() {
+      alert(`Email cím: ${inputs[0].value}\nJelszó: ${inputs[1].value}`);
+      reset();
+    }
+
+    // Cancel
+    function cancel() {
+      if ((inputs[0].value !== '' ||
+           inputs[1].value !== '') &&
+           !confirm('Az adatok elvesznek, biztos megszakítja?')) {
+        focus();
+        return;
+      }
+      alert("Megszakítva!");
+      reset();
+    }
+
+    // Reset inputs
+    function reset() {
+      inputs[0].value = '';
+      inputs[1].value = '';
+      inputs[2].checked = false;
+      togglePassword();
+      changed();
+      focus();
+    }
+
+    // Set focus to first input element
+    function focus() {
+      setTimeout(() => {inputs[0].focus();}, 150);
+    }
+
+    // Toggle theme
+    function toggleTheme() {
+      let theme = document.body.getAttribute('data-bs-theme');
+      theme = theme === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-bs-theme', theme);
+      themeIcons[0].classList.toggle('d-none');
+      themeIcons[1].classList.toggle('d-none');
+    }
+
+    // Set focus
+    focus();
+  </script>
+</body>
+</html>
