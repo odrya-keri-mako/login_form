@@ -73,8 +73,8 @@ Thumbs.db
 # **/pnpm-lock.yaml
 
 ############################################################
-# Root-only ignores (csak a gyökérben)
+# Word, excel, zip fájlok (ne menjenek fel GitHub-ra)
 ############################################################
-/*.docx
-/*.xlsx
-/*.zip
+**/*.docx
+**/*.xlsx
+**/*.zip

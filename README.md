@@ -1,6 +1,7 @@
 # LOGIN form
 ```txt
 Implementing the login form behavior using a different frameworks
+Required: Bootstrap 5, Fontawesome 7
 (JavaScript / AngularJS / Angular / React / Vue / Svelte)
 ```
 
@@ -64,6 +65,8 @@ Run stop batch file
 - login_form-javascript_03.html
 - login-form-angularJs.html
 
-### TASK
+### TASK (task folder)
 - Starting point: login_form.html
 - Description: login_form.pdf
+- Ikons: html5.svg, javaqscript.svg, angularJs.svg, 
+  angular.svg, react.svg, svelte.svg, vue.svg
