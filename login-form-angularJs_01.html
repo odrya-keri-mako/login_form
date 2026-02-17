@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bejelentkezés - AngularJs</title>
+  <title>Bejelentkezés - AngularJs_01</title>
   <link rel="icon" type="image/svg+xml" href="./angularJs.svg">
 
   <!-- Application components -->
@@ -54,7 +54,6 @@
 </head>
 <body ng-app="app"
       ng-controller="appController"
-      ng-init="isDark = true"
       ng-attr-data-bs-theme="{{isDark ? 'dark' : 'light'}}">
 
   <!-- Container -->
@@ -68,7 +67,7 @@
       <div id="toggle-theme"
            class="position-fixed top-0 end-0 
                   w-auto p-3 z-3 cursor-pointer"
-           ng-click="isDark = !isDark">
+           ng-click="toggleTheme()">
         <i class="fa-solid fa-moon fa-lg theme-icon"
            ng-class="{'d-none': isDark}"></i>
         <i class="fa-solid fa-sun fa-lg theme-icon"
@@ -77,9 +76,9 @@
 
       <!-- Form -->
       <form name="loginForm"
-            ng-init="model = {}"
             class="w-auto p-3 border rounded 
-                   shadow-sm-bottom-end scale-in">
+                   shadow-sm-bottom-end scale-in"
+            novalidate>
 
         <!-- Title -->
         <div class="row my-4 justify-content-center">
@@ -108,12 +107,10 @@
           <!-- Input -->
           <div class="position-relative 
                       d-flex flex-col align-items-center">
-            <input type="email"
+            <input type="text"
                    name="email"
                    id="email"
-                   ng-init="model.email = ''"
                    ng-model="model.email"
-                   ng-pattern="/^[^\s@]+@(?:[^\s@]+\.)+[A-Za-z]{2,63}$/"
                    class="form-control pe-5" 
                    placeholder="email cím"
                    autocomplete="email"
@@ -125,14 +122,12 @@
             <!-- Clear icon -->
             <i class="fa-solid fa-xmark text-primary fa-2xs
                       end-0 me-5 position-absolute cursor-pointer"
-               ng-class="{'invisible': !loginForm.email.$dirty || 
-                                        model.email === ''}"
-               ng-click="model.email = ''; $applyAsync(); 
-                         $event.currentTarget.previousElementSibling.focus();"></i>
+               ng-class="{'invisible': !hasValue('email')}"
+               ng-click="clearValue($event, 'email')"></i>
 
             <!-- Check icon -->
             <i class="fa-solid fa-check ms-3 text-success fw-bold"
-               ng-class="{'invisible': !loginForm.email.$valid}"></i>
+               ng-class="{'invisible': !isEmail()}"></i>
           </div>
         </div>
 
@@ -153,34 +148,30 @@
             <input ng-attr-type="{{model.showPassword ? 'text' : 'password'}}"
                    name="password"
                    id="password"
-                   ng-init="model.password = ''"
                    ng-model="model.password"
-                   ng-pattern="/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/"
                    class="form-control pe-5" 
                    placeholder="jelszó"
                    autocomplete="current-password"
                    spellcheck="false"
                    required
-                   minlength="6"
                    maxlength="20">
 
             <!-- Clear icon -->
             <i class="fa-solid fa-xmark text-primary fa-2xs
                       end-0 me-5 position-absolute cursor-pointer"
-              ng-class="{'invisible': !loginForm.password.$dirty || 
-                                       model.password === ''}"
-              ng-click="model.password = ''; $applyAsync(); 
-                        $event.currentTarget.previousElementSibling.focus();"></i>
+               ng-class="{'invisible': !hasValue('password')}"
+               ng-click="clearValue($event, 'password')"></i>
 
             <!-- Check icon -->
             <i class="fa-solid fa-check ms-3 text-success fw-bold" 
-               ng-class="{'invisible': !loginForm.password.$valid}"></i>
+               ng-class="{'invisible': !isPassword()}"></i>
           </div>
         </div>
 
         <!-- Passwor rule -->
         <div class="mb-2 fs-xs ms-1 me-5 text-break">
-          6-20 karakter (legalább egy nagybetűt, egy kisbetűt és egy számot tartalmaz)
+          6-20 karakter 
+          (legalább egy nagybetűt, egy kisbetűt és egy számot tartalmaz)
         </div>
 
         <!-- Show/Hide password -->
@@ -188,7 +179,6 @@
           <input type="checkbox"
                  name="showPassword"
                  id="showPassword"
-                 ng-init="model.showPassword = false"
                  ng-model="model.showPassword"
                  class="form-check-input m-0">
           <label class="form-check-label fs-sm"
@@ -205,8 +195,8 @@
           <button type="button" 
                   class="btn btn-primary btn-form mx-2 mb-3 
                          shadow-sm-bottom-end btn-click-effect"
-                  ng-disabled="loginForm.$invalid"
-                  ng-click="methods.login()">
+                  ng-disabled="!isEmail() || !isPassword()"
+                  ng-click="login()">
             <i class="fa-solid fa-right-to-bracket me-1"></i>
             Bejelentkezés
           </button>
@@ -215,7 +205,7 @@
           <button type="button" 
                   class="btn btn-secondary btn-form mx-2 mb-3 
                          shadow-sm-bottom-end btn-click-effect"
-                  ng-click="methods.cancel()">
+                  ng-click="cancel()">
             <i class="fa-solid fa-circle-xmark me-1"></i>
             Mégsem
           </button>
@@ -235,43 +225,69 @@
 
         // Get first input element (email)
         const inputEmail = document.querySelector('input[name="email"]');
-
-        // Set local methods
-        const methods = {
-
-          // Reset inputs
-          reset: () => {
-            Object.keys($scope.model).forEach(key => 
-              $scope.model[key] = key === 'showPassword' ? false : '');
-            $scope.$applyAsync();
-            methods.focus();
-          },
-
-          // Set focus to first input element (email)
-          focus: () => inputEmail.focus()
+        
+        // Set model
+        $scope.model = {
+          email: '',
+          password: '',
+          showPassword: false
         };
 
-        // Set scope methods
-        $scope.methods = {
+        // Set theme
+        $scope.isDark = true;
 
-          // Login
-          login: () => {
-            alert(`Email cím: ${$scope.model.email}\nJelszó: ${$scope.model.password}`);
-            methods.reset();
-          },
+        // Toggle dark/light theme
+        $scope.toggleTheme = () => $scope.isDark = !$scope.isDark;
 
-          // Cancel
-          cancel: () => {
-            if (($scope.model.email !== '' ||
-                 $scope.model.password !== '') &&
-                !confirm('Az adatok elvesznek, biztos megszakítja?')) {
-              methods.focus();
-              return;
-            }
-            alert('Megszakítva!');
-            methods.reset();
+        // Validate email
+        $scope.isEmail = () => {
+          const RE = /^[^\s@]+@(?:[^\s@]+\.)+[A-Za-z]{2,63}$/;
+          return $scope.model.email && RE.test($scope.model.email);
+        };
+
+        // Validate password
+        $scope.isPassword = () => {
+          const RE = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+          return $scope.model.password && RE.test($scope.model.password);
+        };
+
+        // Clear input value and set focus
+        $scope.clearValue = (event, field) => {
+          $scope.model[field] = '';
+          event.currentTarget.parentNode.querySelector('input').focus();
+        };
+
+        // Check if input has value
+        $scope.hasValue = (field) => {
+          return $scope.model[field] && $scope.model[field] !== '';
+        };
+
+        // Login
+        $scope.login = () => {
+          alert(`Email cím: ${$scope.model.email}\n` +
+                  `Jelszó: ${$scope.model.password}`);
+          resetForm();
+        };
+
+        // Cancel
+        $scope.cancel = () => {
+          if (($scope.model.email !== '' ||
+               $scope.model.password !== '') &&
+              !confirm('Az adatok elvesznek, biztos megszakítja?')) {
+            inputEmail.focus();
+            return;
           }
+          alert('Megszakítva!');
+          resetForm();
         };
+
+        // Reset form
+        function resetForm() {
+          Object.keys($scope.model).forEach(key => 
+            $scope.model[key] = key === 'showPassword' ? false : '');
+          $scope.$applyAsync();
+          inputEmail.focus();
+        }
       }
     ]);
 

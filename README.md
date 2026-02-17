@@ -63,7 +63,8 @@ Run stop batch file
 - login_form-javascript_01.html
 - login_form-javascript_02.html
 - login_form-javascript_03.html
-- login-form-angularJs.html
+- login-form-angularJs_01.html
+- login-form-angularJs_02.html
 
 ### TASK (task folder)
 - Starting point: login_form.html

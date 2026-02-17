@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bejelentkezés - AngularJs_02</title>
+  <link rel="icon" type="image/svg+xml" href="./angularJs.svg">
+
+  <!-- Application components -->
+  <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.8/css/bootstrap.min.css">
+  <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+  <!-- Styles -->
+  <style>
+    *:not(input):not(textarea) {
+      user-select:none !important;
+      outline-style:none !important;
+    }
+    .cursor-pointer {
+      cursor: pointer;
+    }
+    .btn-form {
+      min-width: 150px;
+    }
+    .fs-xs {
+      font-size: 0.6rem;
+    }
+    .fs-sm {
+      font-size: 0.8rem;;
+    }
+    .shadow-sm-bottom-end {
+      box-shadow: 0.3rem 0.3rem 0.3rem 0 rgba(0,0,0,0.3);
+    }
+    .btn-click-effect:not(.disabled):active {
+      animation:btnClickEffect 40ms;
+    }
+    @keyframes btnClickEffect {
+        0% 	{transform:none;}
+      50% 	{transform:scale(0.9);}
+      100% 	{transform:none;}
+    }
+    .scale-in {
+      animation: scaleIn .6s ease both;
+    }
+    @keyframes scaleIn {
+        0% 	{opacity:0;transform: scale(0); }
+      25% 	{opacity:0;transform: scale(0); }
+      100% 	{opacity:1;transform: scale(1); }
+    }
+  </style>
+
+</head>
+<body ng-app="app"
+      ng-controller="appController"
+      ng-init="isDark = true"
+      ng-attr-data-bs-theme="{{isDark ? 'dark' : 'light'}}">
+
+  <!-- Container -->
+  <div class="container-fluid">
+
+    <!-- Row -->
+    <div class="row vh-100 px-2 position-relative
+                justify-content-center align-items-center">
+
+      <!-- Toggle dark/light theme -->
+      <div id="toggle-theme"
+           class="position-fixed top-0 end-0 
+                  w-auto p-3 z-3 cursor-pointer"
+           ng-click="isDark = !isDark">
+        <i class="fa-solid fa-moon fa-lg theme-icon"
+           ng-class="{'d-none': isDark}"></i>
+        <i class="fa-solid fa-sun fa-lg theme-icon"
+           ng-class="{'d-none': !isDark}"></i>
+      </div>
+
+      <!-- Form -->
+      <form name="loginForm"
+            ng-init="model = {}"
+            class="w-auto p-3 border rounded 
+                   shadow-sm-bottom-end scale-in"
+            novalidate>
+
+        <!-- Title -->
+        <div class="row my-4 justify-content-center">
+          <img ng-src="./angularJs.svg" 
+               class="mb-3" 
+               height="50" 
+               alt="logo" 
+               loading="lazy">
+          <h4 class="text-center">
+            <i class="fa-solid fa-right-to-bracket me-1"></i>
+            Bejelentkezés
+          </h4>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-4">
+
+          <!-- Label -->
+          <label class="form-label fw-bold"
+                 for="email">
+            <i class="fa-solid fa-star fa-2xs text-danger"></i>
+            <i class="fa-solid fa-envelope me-1"></i>
+            Email cím:
+          </label>
+
+          <!-- Input -->
+          <div class="position-relative 
+                      d-flex flex-col align-items-center">
+            <input type="email"
+                   name="email"
+                   id="email"
+                   ng-init="model.email = ''"
+                   ng-model="model.email"
+                   ng-pattern="/^[^\s@]+@(?:[^\s@]+\.)+[A-Za-z]{2,63}$/"
+                   class="form-control pe-5" 
+                   placeholder="email cím"
+                   autocomplete="email"
+                   spellcheck="false"
+                   required
+                   maxlength="253"
+                   autofocus>
+
+            <!-- Clear icon -->
+            <i class="fa-solid fa-xmark text-primary fa-2xs
+                      end-0 me-5 position-absolute cursor-pointer"
+               ng-class="{'invisible': !loginForm.email.$dirty || 
+                                        model.email === ''}"
+               ng-click="model.email = ''; $applyAsync(); 
+                         $event.currentTarget.parentNode
+                               .querySelector('input').focus();"></i>
+
+            <!-- Check icon -->
+            <i class="fa-solid fa-check ms-3 text-success fw-bold"
+               ng-class="{'invisible': !loginForm.email.$valid}"></i>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-1">
+
+          <!-- Label -->
+          <label class="form-label fw-bold"
+                 for="password">
+            <i class="fa-solid fa-star fa-2xs text-danger"></i>
+            <i class="fa-solid fa-key me-1"></i>
+            Jelszó:
+          </label>
+
+          <!-- Input -->
+          <div class="position-relative
+                      d-flex flex-col align-items-center">
+            <input ng-attr-type="{{model.showPassword ? 'text' : 'password'}}"
+                   name="password"
+                   id="password"
+                   ng-init="model.password = ''"
+                   ng-model="model.password"
+                   ng-pattern="/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/"
+                   class="form-control pe-5" 
+                   placeholder="jelszó"
+                   autocomplete="current-password"
+                   spellcheck="false"
+                   required
+                   minlength="6"
+                   maxlength="20">
+
+            <!-- Clear icon -->
+            <i class="fa-solid fa-xmark text-primary fa-2xs
+                      end-0 me-5 position-absolute cursor-pointer"
+              ng-class="{'invisible': !loginForm.password.$dirty || 
+                                       model.password === ''}"
+              ng-click="model.password = ''; $applyAsync(); 
+                        $event.currentTarget.parentNode
+                              .querySelector('input').focus();"></i>
+
+            <!-- Check icon -->
+            <i class="fa-solid fa-check ms-3 text-success fw-bold" 
+               ng-class="{'invisible': !loginForm.password.$valid}"></i>
+          </div>
+        </div>
+
+        <!-- Passwor rule -->
+        <div class="mb-2 fs-xs ms-1 me-5 text-break">
+          6-20 karakter 
+          (legalább egy nagybetűt, egy kisbetűt és egy számot tartalmaz)
+        </div>
+
+        <!-- Show/Hide password -->
+        <div class="mb-5 d-flex align-items-center">
+          <input type="checkbox"
+                 name="showPassword"
+                 id="showPassword"
+                 ng-init="model.showPassword = false"
+                 ng-model="model.showPassword"
+                 class="form-check-input m-0">
+          <label class="form-check-label fs-sm"
+                 for="showPassword">
+            <i class="fa-solid fa-eye fa-sm ms-2"></i>
+            jelszót megjelenít
+          </label>
+        </div>
+
+        <!-- Buttons -->
+        <div class="text-center">
+
+          <!-- Login -->
+          <button type="button" 
+                  class="btn btn-primary btn-form mx-2 mb-3 
+                         shadow-sm-bottom-end btn-click-effect"
+                  ng-disabled="loginForm.$invalid"
+                  ng-click="methods.login()">
+            <i class="fa-solid fa-right-to-bracket me-1"></i>
+            Bejelentkezés
+          </button>
+
+          <!-- Cancel -->
+          <button type="button" 
+                  class="btn btn-secondary btn-form mx-2 mb-3 
+                         shadow-sm-bottom-end btn-click-effect"
+                  ng-click="methods.cancel()">
+            <i class="fa-solid fa-circle-xmark me-1"></i>
+            Mégsem
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+
+  <script>
+
+    angular.module('app', [])
+    .controller('appController', [
+      '$scope', 
+      function($scope) {
+
+        // Get first input element (email)
+        const inputEmail = document.querySelector('input[name="email"]');
+
+        // Set local methods
+        const methods = {
+
+          // Reset inputs
+          reset: () => {
+            Object.keys($scope.model).forEach(key => 
+              $scope.model[key] = key === 'showPassword' ? false : '');
+            $scope.$applyAsync();
+            methods.focus();
+          },
+
+          // Set focus to first input element (email)
+          focus: () => inputEmail.focus()
+        };
+
+        // Set scope methods
+        $scope.methods = {
+
+          // Login
+          login: () => {
+            alert(`Email cím: ${$scope.model.email}\nJelszó: ${$scope.model.password}`);
+            methods.reset();
+          },
+
+          // Cancel
+          cancel: () => {
+            if (($scope.model.email !== '' ||
+                 $scope.model.password !== '') &&
+                !confirm('Az adatok elvesznek, biztos megszakítja?')) {
+              methods.focus();
+              return;
+            }
+            alert('Megszakítva!');
+            methods.reset();
+          }
+        };
+      }
+    ]);
+
+  </script>
+</body>
+</html>
